@@ -1,0 +1,29 @@
+---
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+#    network_mode: bridge
+    environment:
+      - PUID=998
+      - PGID=998
+      - TZ=Etc/UTC
+      - VERSION=docker
+      - PLEX_CLAIM= #optional
+    volumes:
+      - /var/lib/plexmediaserver/Library:/config/Library
+      - /mnt/Plex/TV Shows 2/:/mnt/Plex/TV Shows 2
+      - /mnt/Plex/Movies:/mnt/Plex/Movies
+      - /mnt/Plex/Music:/mnt/Plex/Music
+      - /mnt/Plex/Audiobooks:/mnt/Plex/Audiobooks
+    ports:
+      - "32400:32400"
+      - "1900:1900/udp"
+      - "5353:5353/udp"
+      - "8324:8324"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+      - "32469:32469"
+    restart: unless-stopped
