@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --verbose -f compose.yml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: plex
+  name: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: plex
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --verbose -f compose.yml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: plex
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+        - env:
+            - name: PGID
+              value: "998"
+            - name: PLEX_CLAIM
+            - name: PUID
+              value: "998"
+            - name: TZ
+              value: Etc/UTC
+            - name: VERSION
+              value: docker
+          image: lscr.io/linuxserver/plex:latest
+          name: plex
+          ports:
+            - containerPort: 32400
+              protocol: TCP
+            - containerPort: 1900
+              protocol: UDP
+            - containerPort: 5353
+              protocol: UDP
+            - containerPort: 8324
+              protocol: TCP
+            - containerPort: 32410
+              protocol: UDP
+            - containerPort: 32412
+              protocol: UDP
+            - containerPort: 32413
+              protocol: UDP
+            - containerPort: 32414
+              protocol: UDP
+            - containerPort: 32469
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /config/Library
+              name: plex-claim0
+            - mountPath: /mnt/Plex/TV Shows 2
+              name: plex-claim1
+            - mountPath: /mnt/Plex/Movies
+              name: plex-claim2
+            - mountPath: /mnt/Plex/Music
+              name: plex-claim3
+            - mountPath: /mnt/Plex/Audiobooks
+              name: plex-claim4
+      restartPolicy: Always
+      volumes:
+        - name: plex-claim0
+          hostPath:
+            path: /var/lib/plexmediaserver/Library
+            type: Directory
+#          persistentVolumeClaim:
+#            claimName: plex-claim0
+        - name: plex-claim1
+          hostPath:
+            path: /mnt/Plex/TV Shows 2
+            type: Directory
+#          persistentVolumeClaim:
+#            claimName: plex-claim1
+        - name: plex-claim2
+          hostPath:
+            path: /mnt/Plex/Movies
+            type: Directory
+#          persistentVolumeClaim:
+#            claimName: plex-claim2
+        - name: plex-claim3
+          hostPath:
+            path: /mnt/Plex/Music
+            type: Directory
+#          persistentVolumeClaim:
+#            claimName: plex-claim3
+        - name: plex-claim4
+          hostPath:
+            path: /mnt/Plex/Audiobooks
+            type: Directory
+#          persistentVolumeClaim:
+#            claimName: plex-claim4
